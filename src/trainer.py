@@ -134,7 +134,7 @@ class Trainer(nn.Module):
     
     def resume_train(self, ckpt_path, data_path,start_idx,end_idx,resume=False,data_size=[80,64],data_max=None,data_min=None,norm_to_tanh=False,save_interval=20):
         # 2 weeks / 30min time step = 672
-        self.data=np.fromfile(data_path,dtype=self.dtype).reshape((-1,data_size[0],data_size[1]))[start_idx:end_idx]
+        self.data=np.fromfile(data_path,dtype=np.float32).reshape((-1,data_size[0],data_size[1]))[start_idx:end_idx]
         
         if data_max!=None:
             self.data=(self.data-data_min)/(data_max-data_min)
