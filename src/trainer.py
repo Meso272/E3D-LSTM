@@ -198,7 +198,7 @@ if __name__ == "__main__":
     parser.add_argument('--window','-w',type=int,default=4)
     parser.add_argument('--horizon','-h',type=int,default=1)
     parser.add_argument('--start_idx','-si',type=int,default=0)
-    parser.add_argument('--end_idx','-ei',type=int,default=100000)
+    parser.add_argument('--end_idx','-ei',type=int,default=10000)
     parser.add_argument('--batchsize','-b',type=int,default=64)
     parser.add_argument('--t_stride','-ts',type=int,default=1)
     parser.add_argument('--t_frames','-tf',type=int,default=2)
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     parser.add_argument('--norm_tanh','-t',type=bool,default=False)
     parser.add_argument('--resume','-r',type=bool,default=False)
     #parser.add_argument('--double','-d',type=int,default=0)
-    parser.add_argument('--save','-s',type=str,default="ckpts_nstxgpi")
+    parser.add_argument('--save','-s',type=str,default="../ckpts_nstxgpi")
     parser.add_argument('--save_interval','-sv',type=int,default=20)
     
     args = parser.parse_args()
