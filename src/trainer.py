@@ -194,7 +194,7 @@ if __name__ == "__main__":
     parser.add_argument('--lr','-l',type=float,default=1e-3)
     parser.add_argument('--datapath','-p',type=str,default="/home/jinyang.liu/lossycompression/NSTX-GPI/nstx_gpi_float.dat")
     parser.add_argument('--hidden_size','-hs',type=int,default=64)
-    parser.add_argument('--batchsize','-b',type=int,default=64)
+    parser.add_argument('--batchsize','-b',type=int,default=32)
     parser.add_argument('--window','-w',type=int,default=4)
     parser.add_argument('--horizon','-ho',type=int,default=1)
     parser.add_argument('--start_idx','-si',type=int,default=0)
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     parser.add_argument('--resume','-r',type=bool,default=False)
     #parser.add_argument('--double','-d',type=int,default=0)
     parser.add_argument('--save','-s',type=str,default="../ckpts_nstxgpi_default")
-    parser.add_argument('--save_interval','-sv',type=int,default=20)
+    parser.add_argument('--save_interval','-sv',type=int,default=10)
     parser.add_argument('--cpu','-c',type=bool,default=False)
 
     args = parser.parse_args()
