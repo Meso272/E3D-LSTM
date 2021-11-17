@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import argparse
-
+import numpy as np
 class Trainer(nn.Module):
     def __init__(self,epoch=100,lr=1e-3,batch_size=64,window=4,horizon=1,t_stride=1,t_frames=2,i_channel=1,i_size=[80,64],tau=2,hidden_size=64,layernum=4,lr_gamma=1):
         super().__init__()
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     parser.add_argument('--norm_tanh','-t',type=bool,default=False)
     parser.add_argument('--resume','-r',type=bool,default=False)
     #parser.add_argument('--double','-d',type=int,default=0)
-    parser.add_argument('--save','-s',type=str,default="../ckpts_nstxgpi")
+    parser.add_argument('--save','-s',type=str,default="../ckpts_nstxgpi_default")
     parser.add_argument('--save_interval','-sv',type=int,default=20)
     
     args = parser.parse_args()
