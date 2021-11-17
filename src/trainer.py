@@ -58,7 +58,7 @@ class Trainer(nn.Module):
         # Weight decay stands for L2 regularization
         self.optimizer = torch.optim.Adam(params, lr=self.lr, weight_decay=0)
         #ADDed:LR-scheduler
-        self.scheduler = optim.lr_scheduler.ExponentialLR(self.optimizer,
+        self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.optimizer,
                                                              gamma = lr_gamma)
         self.apply(weights_init())
 
