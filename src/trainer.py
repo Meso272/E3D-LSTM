@@ -10,10 +10,10 @@ import torch.nn.functional as F
 import argparse
 import numpy as np
 class Trainer(nn.Module):
-    def __init__(self,epoch=100,lr=1e-3,batch_size=64,window=4,horizon=1,t_stride=1,t_frames=2,i_channel=1,i_size=[80,64],tau=2,hidden_size=64,layernum=4,lr_gamma=1):
+    def __init__(self,epoch=100,lr=1e-3,batch_size=64,window=4,horizon=1,t_stride=1,t_frames=2,i_channel=1,i_size=[80,64],tau=2,hidden_size=64,layernum=4,lr_gamma=1,cpu=False):
         super().__init__()
 
-        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cuda:0" if (torch.cuda.is_available() and not cpu) else "cpu")
         dtype = torch.float
         self.dtype=dtype
         # TODO make all configurable:Done
@@ -210,11 +210,12 @@ if __name__ == "__main__":
     #parser.add_argument('--double','-d',type=int,default=0)
     parser.add_argument('--save','-s',type=str,default="../ckpts_nstxgpi_default")
     parser.add_argument('--save_interval','-sv',type=int,default=20)
-    
+    parser.add_argument('--cpu','-c',type=bool,default=False)
+
     args = parser.parse_args()
     dmax=4070
     dmin=0
     trainer = Trainer(epoch=args.epoch,lr=args.lr,batch_size=args.batchsize,window=args.window,horizon=args.horizon,t_stride=args.t_stride
-        ,t_frames=args.t_frames,i_channel=1,i_size=args.input_size,tau=2,hidden_size=args.hidden_size,layernum=args.layernum,lr_gamma=args.lrgamma)
+        ,t_frames=args.t_frames,i_channel=1,i_size=args.input_size,tau=2,hidden_size=args.hidden_size,layernum=args.layernum,lr_gamma=args.lrgamma,cpu=self.cpu)
     trainer.resume_train(args.save ,args.datapath,start_idx=args.start_idx,end_idx=args.end_idx,
         resume=args.resume, data_size=args.input_size ,data_max=dmax,data_min=dmin,norm_to_tanh=args.norm_tanh,save_interval=args.save_interval)
