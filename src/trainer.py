@@ -36,7 +36,7 @@ class Trainer(nn.Module):
         self.tau = tau
         #hidden_size = 64
         kernel = (2, 5, 5) #Todo: Different kernel sizes
-        lstm_layers = layer_num
+        lstm_layers = layernum
 
         self.encoder = E3DLSTM(
             input_shape, hidden_size, lstm_layers, kernel, self.tau
