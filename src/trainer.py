@@ -148,6 +148,8 @@ class Trainer(nn.Module):
             checkpoint = torch.load(ckpt_path)
             epoch = checkpoint["epoch"]
             self.load_state_dict(checkpoint["state_dict"])
+            self.optimizer.load_state_dict(checkpoint["optimizer"])
+            self.scheduler.load_state_dict(checkpoint["scheduler"])
             ckpt_path=os.path.dirname(ckpt_path)
         else:
             if not os.path.exists(ckpt_path):
@@ -184,7 +186,7 @@ class Trainer(nn.Module):
                         )
                     )
             if epoch % save_interval==0 or epoch==self.num_epoch-1:
-                torch.save({"epoch": epoch, "state_dict": self.state_dict()}, os.path.join(ckpt_path,"%d.pt" % epoch))
+                torch.save({"epoch": epoch, "state_dict": self.state_dict(),"optimizer":self.optimizer.state_dict(),"scheduler":self.scheduler.state_dict()}, os.path.join(ckpt_path,"%d.pt" % epoch))
             self.validate(val_dataloader)
 
 
