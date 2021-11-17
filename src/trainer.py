@@ -132,7 +132,7 @@ class Trainer(nn.Module):
 
         print(f"Validation L1:{sum_l1_loss / (i + 1)}; L2: {sum_l2_loss / (i + 1)}")
     
-    def resume_train(self, ckpt_path, resume=False,data_path,data_size=[80,64],start_idx,end_idx,data_max=None,data_min=None,norm_to_tanh=False,save_interval=20):
+    def resume_train(self, ckpt_path, data_path,start_idx,end_idx,resume=False,data_size=[80,64],data_max=None,data_min=None,norm_to_tanh=False,save_interval=20):
         # 2 weeks / 30min time step = 672
         self.data=np.fromfile(data_path,dtype=self.dtype).reshape((-1,data_size[0],data_size[1]))[start_idx:end_idx]
         
@@ -217,5 +217,5 @@ if __name__ == "__main__":
     dmin=0
     trainer = Trainer(self,epoch=args.epoch,lr=args.lr,batch_size=args.batchsize,window=args.window,horizon=args.horizon,t_stride=args.t_stride
         ,t_frames=args.t_frames,i_channel=1,i_size=args.input_size,tau=2,hidden_size=args.hidden_size,layernum=args.layernum,lr_gamma=args.lrgamma)
-    trainer.resume_train(args.save,args.resume,args.datapath,data_size=args.input_size,start_idx=args.start_idx,end_idx=args.end_idx,
-        data_max=dmax,data_min=dmin,norm_to_tanh=args.norm_tanh,save_interval=args.save_interval)
+    trainer.resume_train(args.save ,args.datapath,start_idx=args.start_idx,end_idx=args.end_idx,
+        args.resume, data_size=args.input_size ,data_max=dmax,data_min=dmin,norm_to_tanh=args.norm_tanh,save_interval=args.save_interval)
