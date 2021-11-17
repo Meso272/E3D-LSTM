@@ -141,8 +141,8 @@ class Trainer(nn.Module):
         if norm_to_tanh:
             self.data=self.data*2-1
         self.data=np.expand_dims(self.data,1)
-        train_dataloader = self.get_trainloader(self.data[:-672])#todo
-        val_dataloader = self.get_trainloader(self.data[-672:], False)#todo
+        train_dataloader = self.get_trainloader(self.data[:-1000])#todo
+        val_dataloader = self.get_trainloader(self.data[-1000:], False)#todo
 
         if resume:
             checkpoint = torch.load(self, ckpt_path)
@@ -192,13 +192,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--lr','-l',type=float,default=1e-3)
-    parser.add_argument('--datapath','-p',type=str,default="/home/jinyang.liu/lossycompression/NSTX-GPI/nstx_gpi_float.dat")
+    parser.add_argument('--datapath','-p',type=str,default="/home/jinyang.liu/lossycompression/NSTX-GPI/nstx_gpi_float_tenth.dat")
     parser.add_argument('--hidden_size','-hs',type=int,default=64)
     parser.add_argument('--batchsize','-b',type=int,default=32)
     parser.add_argument('--window','-w',type=int,default=4)
     parser.add_argument('--horizon','-ho',type=int,default=1)
     parser.add_argument('--start_idx','-si',type=int,default=0)
-    parser.add_argument('--end_idx','-ei',type=int,default=100000)    
+    parser.add_argument('--end_idx','-ei',type=int,default=20000)    
     parser.add_argument('--t_stride','-ts',type=int,default=1)
     parser.add_argument('--t_frames','-tf',type=int,default=2)
     parser.add_argument('--epoch','-e',type=int,default=100)
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     parser.add_argument('--norm_tanh','-t',type=bool,default=False)
     parser.add_argument('--resume','-r',type=bool,default=False)
     #parser.add_argument('--double','-d',type=int,default=0)
-    parser.add_argument('--save','-s',type=str,default="../ckpts_nstxgpi_default")
+    parser.add_argument('--save','-s',type=str,default="../ckpts_nstxgpi_tenthdefault")
     parser.add_argument('--save_interval','-sv',type=int,default=10)
     parser.add_argument('--cpu','-c',type=bool,default=False)
 
