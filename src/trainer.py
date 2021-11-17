@@ -153,7 +153,7 @@ class Trainer(nn.Module):
             if not os.path.exists(ckpt_path):
                 os.makedirs(ckpt_path)
             epoch = 0
-
+ 
         while epoch < self.num_epoch:
             epoch += 1
             for i, (input, target) in enumerate(train_dataloader):
@@ -192,13 +192,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--lr','-l',type=float,default=1e-3)
-    parser.add_argument('--datapath','-p',type=str,default="/home/jliu447/lossycompression/NSTX-GPI/nstx_gpi_float.dat")
+    parser.add_argument('--datapath','-p',type=str,default="/home/jinyang.liu/lossycompression/NSTX-GPI/nstx_gpi_float.dat")
     parser.add_argument('--hidden_size','-hs',type=int,default=64)
     parser.add_argument('--batchsize','-b',type=int,default=64)
     parser.add_argument('--window','-w',type=int,default=4)
     parser.add_argument('--horizon','-ho',type=int,default=1)
     parser.add_argument('--start_idx','-si',type=int,default=0)
-    parser.add_argument('--end_idx','-ei',type=int,default=10000)    
+    parser.add_argument('--end_idx','-ei',type=int,default=100000)    
     parser.add_argument('--t_stride','-ts',type=int,default=1)
     parser.add_argument('--t_frames','-tf',type=int,default=2)
     parser.add_argument('--epoch','-e',type=int,default=100)
