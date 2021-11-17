@@ -140,7 +140,7 @@ class Trainer(nn.Module):
             self.data=(self.data-data_min)/(data_max-data_min)
         if norm_to_tanh:
             self.data=self.data*2-1
-
+        self.data=np.expand_dims(self.data,1)
         train_dataloader = self.get_trainloader(self.data[:-672])#todo
         val_dataloader = self.get_trainloader(self.data[-672:], False)#todo
 
