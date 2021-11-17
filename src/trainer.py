@@ -214,7 +214,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     dmax=4070
     dmin=0
-    trainer = Trainer(self,epoch=args.epoch,lr=args.lr,batch_size=args.batchsize,window=args.window,horizon=args.horizon,t_stride=args.t_stride
+    trainer = Trainer(epoch=args.epoch,lr=args.lr,batch_size=args.batchsize,window=args.window,horizon=args.horizon,t_stride=args.t_stride
         ,t_frames=args.t_frames,i_channel=1,i_size=args.input_size,tau=2,hidden_size=args.hidden_size,layernum=args.layernum,lr_gamma=args.lrgamma)
     trainer.resume_train(args.save ,args.datapath,start_idx=args.start_idx,end_idx=args.end_idx,
         resume=args.resume, data_size=args.input_size ,data_max=dmax,data_min=dmin,norm_to_tanh=args.norm_tanh,save_interval=args.save_interval)
