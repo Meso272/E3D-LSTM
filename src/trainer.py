@@ -9,6 +9,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import argparse
 import numpy as np
+import math
 class Trainer(nn.Module):
     def __init__(self,epoch=100,lr=1e-3,batch_size=64,window=4,horizon=1,t_stride=1,t_frames=2,i_channel=1,i_size=[80,64],tau=2,hidden_size=64,layernum=4,lr_gamma=1,cpu=False):
         super().__init__()
@@ -27,7 +28,8 @@ class Trainer(nn.Module):
         self.time_steps = (
             self.input_time_window - self.temporal_frames + 1
         ) // self.temporal_stride
-
+        self.hidden_size=hidden_size
+        self.layernum=layernum
         # Initiate the network
         # CxT×H×W
         input_shape = (i_channel, self.temporal_frames, i_size[0], i_size[1])
@@ -102,7 +104,7 @@ class Trainer(nn.Module):
         return DataLoader(
             dataset,
             batch_size=self.batch_size,
-            shuffle=True,
+            shuffle=shuffle,
             drop_last=True,
             pin_memory=True,
         )
@@ -186,7 +188,9 @@ class Trainer(nn.Module):
                         )
                     )
             if epoch % save_interval==0 or epoch==self.num_epoch-1:
-                torch.save({"epoch": epoch, "state_dict": self.state_dict(),"optimizer":self.optimizer.state_dict(),"scheduler":self.scheduler.state_dict()}, os.path.join(ckpt_path,"%d.pt" % epoch))
+                torch.save({"epoch": epoch, "state_dict": self.state_dict(),"optimizer":self.optimizer.state_dict(),"scheduler":self.scheduler.state_dict(),
+                    "window":self.input_time_window,"horizon":self.output_time_horizon,"stride":self.temporal_stride,"frame":self.temporal_frames,
+                    "tau":self.tau,"hidden_size":self.hidden_size,"layernum":self.layernum}, os.path.join(ckpt_path,"%d.pt" % epoch))
             self.validate(val_dataloader)
 
 
