@@ -21,15 +21,15 @@ if __name__ == "__main__":
     parser.add_argument('--batchsize','-b',type=int,default=32)
     parser.add_argument('--window','-w',type=int,default=4)
     parser.add_argument('--horizon','-ho',type=int,default=1)
-    parser.add_argument('--start_idx','-si',type=int,default=0)
-    parser.add_argument('--end_idx','-ei',type=int,default=20000)    
+    parser.add_argument('--start_idx','-si',type=int,default=21000)
+    parser.add_argument('--end_idx','-ei',type=int,default=30000)    
     parser.add_argument('--t_stride','-ts',type=int,default=1)
     parser.add_argument('--t_frames','-tf',type=int,default=2)
     parser.add_argument('--input_size','-is',type=int,nargs="+",default=[80,64])
     parser.add_argument('--layernum','-n',type=int,default=4)
     parser.add_argument('--norm_tanh','-t',type=bool,default=False)
     #parser.add_argument('--double','-d',type=int,default=0)
-    parser.add_argument('--save','-s',type=str,default="ckpts_nstxgpi_tenthdefault")
+    parser.add_argument('--save','-s',type=str,default="ckpts_nstxgpi_tenthdefault/30.pt")
     
 
 
