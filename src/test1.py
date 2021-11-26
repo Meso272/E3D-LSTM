@@ -10,7 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import argparse
 import numpy as np
-from math import log10
+from math import log10,sqrt
 from trainer import *
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -82,6 +82,7 @@ if __name__ == "__main__":
             mse = F.mse_loss(output , target )
 
             psnr=20*log10(torch.max(target)-torch.min(target)-10*log10(mse))
+            print(sqrt(mse))
             print(psnr)
             psnrs.append(psnr)
 
