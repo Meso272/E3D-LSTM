@@ -134,7 +134,7 @@ class Trainer(nn.Module):
 
         print(f"Validation L1:{sum_l1_loss / (i + 1)}; L2: {sum_l2_loss / (i + 1)}")
     
-    def resume_train(self, ckpt_path, data_path,start_idx,end_idx,resume=False,data_size=[80,64],data_max=None,data_min=None,norm_to_tanh=False,save_interval=20):
+    def resume_train(self, ckpt_path, data_path,start_idx,end_idx,resume=False,data_size=[80,64],data_max=None,data_min=None,norm_to_tanh=False,save_interval=5):
         # 2 weeks / 30min time step = 672
         self.data=np.fromfile(data_path,dtype=np.float32).reshape((-1,data_size[0],data_size[1]))[start_idx:end_idx]
         
@@ -190,7 +190,7 @@ class Trainer(nn.Module):
             if epoch % save_interval==0 or epoch==self.num_epoch-1:
                 torch.save({"epoch": epoch, "state_dict": self.state_dict(),"optimizer":self.optimizer.state_dict(),"scheduler":self.scheduler.state_dict(),
                     "window":self.input_time_window,"horizon":self.output_time_horizon,"stride":self.temporal_stride,"frame":self.temporal_frames,
-                    "tau":self.tau,"hidden_size":self.hidden_size,"layernum":self.layernum}, os.path.join(ckpt_path,"%d.pt" % epoch))
+                    "tau":self.tau,"hidden_size":self.hidden_size,"layernum":self.layernum,"norm_tanh":norm_to_tanh}, os.path.join(ckpt_path,"%d.pt" % epoch))
             self.validate(val_dataloader)
 
 
