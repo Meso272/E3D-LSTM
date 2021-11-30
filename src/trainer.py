@@ -211,7 +211,7 @@ if __name__ == "__main__":
     parser.add_argument('--i_channel','-ic',type=int,default=1)
     parser.add_argument('--input_size','-is',type=int,nargs="+",default=[80,64])
     parser.add_argument('--layernum','-n',type=int,default=4)
-    parser.add_argument('--lrgamma','-lg',type=float,default=1)
+    parser.add_argument('--lr_gamma','-lg',type=float,default=1)
     parser.add_argument('--data_max','-mx',type=float,default=4070)
     parser.add_argument('--data_min','-mi',type=float,default=0)
     parser.add_argument('--norm_tanh','-t',type=bool,default=False)
