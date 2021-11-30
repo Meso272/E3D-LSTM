@@ -188,7 +188,7 @@ class Trainer(nn.Module):
                             epoch, self.num_epoch, i, len(train_dataloader), l2_loss
                         )
                     )
-            if epoch % save_interval==0 or epoch==self.num_epoch:
+            if epoch % args.save_interval==0 or epoch==self.num_epoch:
                 torch.save({"epoch": epoch, "state_dict": self.state_dict(),"optimizer":self.optimizer.state_dict(),"scheduler":self.scheduler.state_dict(),
                     "args":args}, os.path.join(ckpt_path,"%d.pt" % epoch))
             self.validate(val_dataloader)
