@@ -154,6 +154,7 @@ class Trainer(nn.Module):
             self.scheduler.load_state_dict(checkpoint["scheduler"])
             ckpt_path=args.save
         else:
+            ckpt_path=args.save
             if not os.path.exists(ckpt_path):
                 os.makedirs(ckpt_path)
             epoch = 0
