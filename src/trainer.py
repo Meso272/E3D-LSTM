@@ -214,7 +214,7 @@ if __name__ == "__main__":
     parser.add_argument('--lr_gamma','-lg',type=float,default=1)
     parser.add_argument('--data_max','-mx',type=float,default=4070)
     parser.add_argument('--data_min','-mi',type=float,default=0)
-    parser.add_argument('--norm_tanh','-t',type=bool,default=False)
+    parser.add_argument('--norm_to_tanh','-t',type=bool,default=False)
     parser.add_argument('--resume','-r',type=bool,default=False)
     #parser.add_argument('--double','-d',type=int,default=0)
     parser.add_argument('--save','-s',type=str,default="ckpts_nstxgpi_tenthdefault")
