@@ -147,12 +147,14 @@ class Trainer(nn.Module):
         val_dataloader = self.get_trainloader(self.data[-1000:], False)#todo
 
         if args.resume:
+            ckpt_path=args.save
             checkpoint = torch.load(ckpt_path)
             epoch = checkpoint["epoch"]
+
             self.load_state_dict(checkpoint["state_dict"])
             self.optimizer.load_state_dict(checkpoint["optimizer"])
             self.scheduler.load_state_dict(checkpoint["scheduler"])
-            ckpt_path=args.save
+            ckpt_path=checkpoint["args"].save
         else:
             ckpt_path=args.save
             if not os.path.exists(ckpt_path):
@@ -230,7 +232,9 @@ if __name__ == "__main__":
         save_interval=args.save_interval
         use_cpu=args.cpu
         ckpt=torch.load(args.save)
+        ckpt_file=args.save
         args=ckpt["args"]
+        args.save=ckpt_file
         args.save_interval=save_interval
         args.cpu=use_cpu
         args.resume=1
