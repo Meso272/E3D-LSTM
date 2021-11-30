@@ -201,6 +201,7 @@ if __name__ == "__main__":
     parser.add_argument('--hidden_size','-hs',type=int,default=64)
     parser.add_argument('--batch_size','-b',type=int,default=32)
     parser.add_argument('--window','-w',type=int,default=4)
+    parser.add_argument('--tau','-tau',type=float,default=2)
     parser.add_argument('--horizon','-ho',type=int,default=1)
     parser.add_argument('--start_idx','-si',type=int,default=0)
     parser.add_argument('--end_idx','-ei',type=int,default=20000)    
