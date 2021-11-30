@@ -11,40 +11,40 @@ import argparse
 import numpy as np
 import math
 class Trainer(nn.Module):
-    def __init__(self,epoch=100,lr=1e-3,batch_size=64,window=4,horizon=1,t_stride=1,t_frames=2,i_channel=1,i_size=[80,64],tau=2,hidden_size=64,layernum=4,lr_gamma=1,cpu=False):
+    def __init__(self,args):
         super().__init__()
 
         self.device = torch.device("cuda:0" if (torch.cuda.is_available() and not cpu) else "cpu")
         dtype = torch.float
         self.dtype=dtype
         # TODO make all configurable:Done
-        self.num_epoch =epoch
-        self.batch_size = batch_size
-        self.lr=lr
-        self.input_time_window = window
-        self.output_time_horizon = horizon
-        self.temporal_stride = t_stride
-        self.temporal_frames = t_frames
+        self.num_epoch =args.epoch
+        self.batch_size = args.batch_size
+        self.lr=args.lr
+        self.input_time_window = args.window
+        self.output_time_horizon = args.horizon
+        self.temporal_stride = args.t_stride
+        self.temporal_frames = args.t_frames
         self.time_steps = (
             self.input_time_window - self.temporal_frames + 1
         ) // self.temporal_stride
-        self.hidden_size=hidden_size
-        self.layernum=layernum
+        self.hidden_size=args.hidden_size
+        self.layernum=args.layernum
         # Initiate the network
         # CxT×H×W
-        input_shape = (i_channel, self.temporal_frames, i_size[0], i_size[1])
-        output_shape = (i_channel, self.output_time_horizon, i_size[0], i_size[1])
+        input_shape = (args.i_channel, self.temporal_frames, args.input_size[0], args.input_size[1])
+        output_shape = (args.i_channel, self.output_time_horizon, args.input_size[0], args.input_size[1])
 
-        self.tau = tau
+        self.tau = args.tau
         #hidden_size = 64
         kernel = (2, 5, 5) #Todo: Different kernel sizes
-        lstm_layers = layernum
+        lstm_layers = args.layernum
 
         self.encoder = E3DLSTM(
-            input_shape, hidden_size, lstm_layers, kernel, self.tau
+            input_shape, args.hidden_size, args.lstm_layers, kernel, self.tau
         ).type(dtype)
         self.decoder = nn.Conv3d(
-            hidden_size * self.time_steps, output_shape[0], kernel, padding=(0, 2, 2)
+            args.hidden_size * self.time_steps, output_shape[0], kernel, padding=(0, 2, 2)
         ).type(dtype)
         #what about adding an actv?
         # self.decoder = nn.Sequential(
@@ -61,7 +61,7 @@ class Trainer(nn.Module):
         self.optimizer = torch.optim.Adam(params, lr=self.lr, weight_decay=0)
         #ADDed:LR-scheduler
         self.scheduler = torch.optim.lr_scheduler.ExponentialLR(self.optimizer,
-                                                             gamma = lr_gamma)
+                                                             gamma = args.lr_gamma)
         self.apply(weights_init())
 
     def forward(self, input_seq):
@@ -134,13 +134,13 @@ class Trainer(nn.Module):
 
         print(f"Validation L1:{sum_l1_loss / (i + 1)}; L2: {sum_l2_loss / (i + 1)}")
     
-    def resume_train(self, ckpt_path, data_path,start_idx,end_idx,resume=False,data_size=[80,64],data_max=None,data_min=None,norm_to_tanh=False,save_interval=5):
+    def resume_train(self, args):
         # 2 weeks / 30min time step = 672
-        self.data=np.fromfile(data_path,dtype=np.float32).reshape((-1,data_size[0],data_size[1]))[start_idx:end_idx]
+        self.data=np.fromfile(args.data_path,dtype=np.float32).reshape((-1,args.input_size[0],args.input_size[1]))[args.start_idx:args.end_idx]
         
-        if data_max!=None:
-            self.data=(self.data-data_min)/(data_max-data_min)
-        if norm_to_tanh:
+        if args.data_max!=None:
+            self.data=(self.data-args.data_min)/(args.data_max-args.data_min)
+        if args.norm_to_tanh:
             self.data=self.data*2-1
         self.data=np.expand_dims(self.data,1)
         train_dataloader = self.get_trainloader(self.data[:-1000])#todo
@@ -152,7 +152,7 @@ class Trainer(nn.Module):
             self.load_state_dict(checkpoint["state_dict"])
             self.optimizer.load_state_dict(checkpoint["optimizer"])
             self.scheduler.load_state_dict(checkpoint["scheduler"])
-            ckpt_path=os.path.dirname(ckpt_path)
+            ckpt_path=args.save
         else:
             if not os.path.exists(ckpt_path):
                 os.makedirs(ckpt_path)
@@ -189,8 +189,7 @@ class Trainer(nn.Module):
                     )
             if epoch % save_interval==0 or epoch==self.num_epoch-1:
                 torch.save({"epoch": epoch, "state_dict": self.state_dict(),"optimizer":self.optimizer.state_dict(),"scheduler":self.scheduler.state_dict(),
-                    "window":self.input_time_window,"horizon":self.output_time_horizon,"stride":self.temporal_stride,"frame":self.temporal_frames,
-                    "tau":self.tau,"hidden_size":self.hidden_size,"layernum":self.layernum,"norm_tanh":norm_to_tanh}, os.path.join(ckpt_path,"%d.pt" % epoch))
+                    "args":args}, os.path.join(ckpt_path,"%d.pt" % epoch))
             self.validate(val_dataloader)
 
 
@@ -198,9 +197,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
     parser.add_argument('--lr','-l',type=float,default=1e-3)
-    parser.add_argument('--datapath','-p',type=str,default="/home/jinyang.liu/lossycompression/NSTX-GPI/nstx_gpi_float_tenth.dat")
+    parser.add_argument('--data_path','-p',type=str,default="/home/jinyang.liu/lossycompression/NSTX-GPI/nstx_gpi_float_tenth.dat")
     parser.add_argument('--hidden_size','-hs',type=int,default=64)
-    parser.add_argument('--batchsize','-b',type=int,default=32)
+    parser.add_argument('--batch_size','-b',type=int,default=32)
     parser.add_argument('--window','-w',type=int,default=4)
     parser.add_argument('--horizon','-ho',type=int,default=1)
     parser.add_argument('--start_idx','-si',type=int,default=0)
@@ -208,9 +207,12 @@ if __name__ == "__main__":
     parser.add_argument('--t_stride','-ts',type=int,default=1)
     parser.add_argument('--t_frames','-tf',type=int,default=2)
     parser.add_argument('--epoch','-e',type=int,default=100)
+    parser.add_argument('--i_channel','-ic',type=int,default=1)
     parser.add_argument('--input_size','-is',type=int,nargs="+",default=[80,64])
     parser.add_argument('--layernum','-n',type=int,default=4)
     parser.add_argument('--lrgamma','-lg',type=float,default=1)
+    parser.add_argument('--data_max','-mx',type=float,default=4070)
+    parser.add_argument('--data_min','-mi',type=float,default=0)
     parser.add_argument('--norm_tanh','-t',type=bool,default=False)
     parser.add_argument('--resume','-r',type=bool,default=False)
     #parser.add_argument('--double','-d',type=int,default=0)
@@ -221,7 +223,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
     dmax=4070
     dmin=0
-    trainer = Trainer(epoch=args.epoch,lr=args.lr,batch_size=args.batchsize,window=args.window,horizon=args.horizon,t_stride=args.t_stride
-        ,t_frames=args.t_frames,i_channel=1,i_size=args.input_size,tau=2,hidden_size=args.hidden_size,layernum=args.layernum,lr_gamma=args.lrgamma,cpu=args.cpu)
-    trainer.resume_train(args.save ,args.datapath,start_idx=args.start_idx,end_idx=args.end_idx,
-        resume=args.resume, data_size=args.input_size ,data_max=dmax,data_min=dmin,norm_to_tanh=args.norm_tanh,save_interval=args.save_interval)
+    
+    if args.resume:
+        save_interval=args.save_interval
+        use_cpu=args.cpu
+        ckpt=torch.load(args.save)
+        args=ckpt["args"]
+        args.save_interval=save_interval
+        args.cpu=use_cpu
+        args.resume=1
+    print(args)
+
+    trainer = Trainer(args)
+    trainer.resume_train(args)
