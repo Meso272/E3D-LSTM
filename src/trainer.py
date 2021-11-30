@@ -14,7 +14,7 @@ class Trainer(nn.Module):
     def __init__(self,args):
         super().__init__()
 
-        self.device = torch.device("cuda:0" if (torch.cuda.is_available() and not cpu) else "cpu")
+        self.device = torch.device("cuda:0" if (torch.cuda.is_available() and not args.cpu) else "cpu")
         dtype = torch.float
         self.dtype=dtype
         # TODO make all configurable:Done
