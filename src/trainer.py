@@ -146,7 +146,7 @@ class Trainer(nn.Module):
         train_dataloader = self.get_trainloader(self.data[:-1000])#todo
         val_dataloader = self.get_trainloader(self.data[-1000:], False)#todo
 
-        if resume:
+        if args.resume:
             checkpoint = torch.load(ckpt_path)
             epoch = checkpoint["epoch"]
             self.load_state_dict(checkpoint["state_dict"])
