@@ -41,7 +41,7 @@ class Trainer(nn.Module):
         lstm_layers = args.layernum
 
         self.encoder = E3DLSTM(
-            input_shape, args.hidden_size, args.lstm_layers, kernel, self.tau
+            input_shape, args.hidden_size, lstm_layers, kernel, self.tau
         ).type(dtype)
         self.decoder = nn.Conv3d(
             args.hidden_size * self.time_steps, output_shape[0], kernel, padding=(0, 2, 2)
