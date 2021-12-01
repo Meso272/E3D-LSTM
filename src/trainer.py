@@ -11,6 +11,11 @@ import argparse
 import numpy as np
 import math
 from math import log10
+def psnr(true,pred):
+    mse=F.mse_loss(true,pred)
+    r=20*log10(torch.max(true)-torch.min(pred)-10*log10(mse))
+    #print(r)
+    return r
 class Trainer(nn.Module):
     def __init__(self,args):
         super().__init__()
@@ -115,6 +120,8 @@ class Trainer(nn.Module):
 
         sum_l1_loss = 0
         sum_l2_loss = 0
+        count=0
+        pr=0
         with torch.no_grad():
             for i, (input, target) in enumerate(val_dataloader):
                 frames_seq = []
@@ -132,10 +139,16 @@ class Trainer(nn.Module):
                 l1_loss, l2_loss,output = self.loss(input, target)
                 print(output.shape)
                 print(target.shape)
+
+                for i in range (output.shape[0]):
+                    pr+=psnr(target[i],output[i])
+                    count+=1
+
+
                 sum_l1_loss += l1_loss
                 sum_l2_loss += l2_loss
                 
-        print(f"Validation L1:{sum_l1_loss / (i + 1)}; L2: {sum_l2_loss / (i + 1)}")
+        print(f"Validation L1:{sum_l1_loss / (i + 1)}; L2: {sum_l2_loss / (i + 1)};PSNR: {pr/count}")
     
     def resume_train(self, args):
         # 2 weeks / 30min time step = 672
