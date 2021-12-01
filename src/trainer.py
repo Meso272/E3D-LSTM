@@ -144,8 +144,8 @@ class Trainer(nn.Module):
         if norm_to_tanh:
             self.data=self.data*2-1
         self.data=np.expand_dims(self.data,1)
-        train_dataloader = self.get_trainloader(self.data[:-1000])#todo
-        val_dataloader = self.get_trainloader(self.data[-1000:], False)#todo
+        train_dataloader = self.get_trainloader(self.data[:-2000])#todo
+        val_dataloader = self.get_trainloader(self.data[-2000:], False)#todo
 
         if resume:
             checkpoint = torch.load(ckpt_path)
