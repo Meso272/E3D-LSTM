@@ -74,7 +74,7 @@ class Trainer(nn.Module):
         l2_loss = F.mse_loss(output , target )
         l1_loss = F.l1_loss(output, target )
 
-        return l1_loss, l2_loss
+        return l1_loss, l2_loss,output
 
     #All data part undone
     '''
@@ -128,8 +128,10 @@ class Trainer(nn.Module):
                     frames_seq.append(input[:, :, indices[0] : indices[-1] + 1])
                 input = torch.stack(frames_seq, dim=0).to(self.device)
                 target = target.to(self.device)
-                print(input.shape)
-                l1_loss, l2_loss = self.loss(input, target)
+                #print(input.shape)
+                l1_loss, l2_loss,output = self.loss(input, target)
+                print(output.shape)
+                print(target.shape)
                 sum_l1_loss += l1_loss
                 sum_l2_loss += l2_loss
                 
@@ -180,7 +182,7 @@ class Trainer(nn.Module):
 
                 self.train()
                 self.optimizer.zero_grad()
-                l1_loss, l2_loss = self.loss(input, target)
+                l1_loss, l2_loss,_ = self.loss(input, target)
                 loss = l1_loss + l2_loss
                 loss.backward()
                 self.optimizer.step()
