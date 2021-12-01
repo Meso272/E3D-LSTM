@@ -159,8 +159,8 @@ class Trainer(nn.Module):
         if args.norm_to_tanh:
             self.data=self.data*2-1
         self.data=np.expand_dims(self.data,1)
-        train_dataloader = self.get_trainloader(self.data[:-2000])#todo
-        val_dataloader = self.get_trainloader(self.data[-2000:], False)#todo
+        train_dataloader = self.get_trainloader(self.data[:-10000])#todo
+        val_dataloader = self.get_trainloader(self.data[-10000:], False)#todo
 
         if args.resume:
             ckpt_path=args.save
@@ -224,7 +224,7 @@ if __name__ == "__main__":
     parser.add_argument('--tau','-tau',type=float,default=2)
     parser.add_argument('--horizon','-ho',type=int,default=1)
     parser.add_argument('--start_idx','-si',type=int,default=0)
-    parser.add_argument('--end_idx','-ei',type=int,default=20000)    
+    parser.add_argument('--end_idx','-ei',type=int,default=30000)    
     parser.add_argument('--t_stride','-ts',type=int,default=1)
     parser.add_argument('--t_frames','-tf',type=int,default=2)
     parser.add_argument('--epoch','-e',type=int,default=100)
