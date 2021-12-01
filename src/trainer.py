@@ -10,6 +10,7 @@ import torch.nn.functional as F
 import argparse
 import numpy as np
 import math
+from math import log10
 class Trainer(nn.Module):
     def __init__(self,epoch=100,lr=1e-3,batch_size=64,window=4,horizon=1,t_stride=1,t_frames=2,i_channel=1,i_size=[80,64],tau=2,hidden_size=64,layernum=4,lr_gamma=1,cpu=False):
         super().__init__()
@@ -127,11 +128,11 @@ class Trainer(nn.Module):
                     frames_seq.append(input[:, :, indices[0] : indices[-1] + 1])
                 input = torch.stack(frames_seq, dim=0).to(self.device)
                 target = target.to(self.device)
-
+                print(input.shape)
                 l1_loss, l2_loss = self.loss(input, target)
                 sum_l1_loss += l1_loss
                 sum_l2_loss += l2_loss
-
+                
         print(f"Validation L1:{sum_l1_loss / (i + 1)}; L2: {sum_l2_loss / (i + 1)}")
     
     def resume_train(self, ckpt_path, data_path,start_idx,end_idx,resume=False,data_size=[80,64],data_max=None,data_min=None,norm_to_tanh=False,save_interval=5):
@@ -173,6 +174,7 @@ class Trainer(nn.Module):
 
                 input = torch.stack(frames_seq, dim=0).to(self.device)
                 target = target.to(self.device)
+
                 self.train()
                 self.optimizer.zero_grad()
                 l1_loss, l2_loss = self.loss(input, target)
