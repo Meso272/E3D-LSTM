@@ -29,6 +29,7 @@ if __name__ == "__main__":
     parser.add_argument('--input_size','-is',type=int,nargs="+",default=[80,64])
     parser.add_argument('--layernum','-n',type=int,default=4)
     parser.add_argument('--norm_tanh','-t',type=bool,default=False)
+    parser.add_argument('--cpu','-c',type=bool,default=False)
     #parser.add_argument('--double','-d',type=int,default=0)
     parser.add_argument('--save','-s',type=str,default="ckpts_nstxgpi_tenthdefault/30.pt")
     
