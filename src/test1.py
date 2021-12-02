@@ -47,12 +47,15 @@ if __name__ == "__main__":
     dmax=4070
     dmin=0
     checkpoint = torch.load(args.save)
+    datapath=args.datapath
     if "args" in checkpoint:
         args=checkpoint["args"]
+        args.datapath=datapath
     trainer = Trainer(args)
     
     trainer.load_state_dict(checkpoint["state_dict"])
     trainer.batch_size=1
+
     data=np.fromfile(args.datapath,dtype=np.float32).reshape((-1,1,args.input_size[0],args.input_size[1]))[args.start_idx:args.end_idx]
 
     data=(data-dmin)/(dmax-dmin)
