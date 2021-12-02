@@ -40,11 +40,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     dmax=4070
     dmin=0
-
-    trainer = Trainer(batch_size=args.batchsize,window=args.window,horizon=args.horizon,t_stride=args.t_stride
-        ,t_frames=args.t_frames,i_channel=1,i_size=args.input_size,tau=2,hidden_size=args.hidden_size,layernum=args.layernum)
     checkpoint = torch.load(args.save)
-    epoch = checkpoint["epoch"]
+    if "args" in checkpoint:
+        args=checkpoint["args"]
+    trainer = Trainer(args)
+    
     trainer.load_state_dict(checkpoint["state_dict"])
     trainer.batch_size=1
     data=np.fromfile(args.datapath,dtype=np.float32).reshape((-1,1,args.input_size[0],args.input_size[1]))[args.start_idx:args.end_idx]
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
             mse = F.mse_loss(output , target )
 
-            psnr=20*log10(torch.max(target)-torch.min(target)-10*log10(mse))
+            psnr=20*log10(torch.max(target)-torch.min(target))-10*log10(mse)
             print(sqrt(mse))
             print(psnr)
             psnrs.append(psnr)
