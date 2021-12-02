@@ -48,18 +48,19 @@ if __name__ == "__main__":
     dmin=0
     checkpoint = torch.load(args.save)
     datapath=args.datapath
+    norm_tanh=args.norm_tanh
     if "args" in checkpoint:
         args=checkpoint["args"]
-        args.datapath=datapath
+       
     trainer = Trainer(args)
     
     trainer.load_state_dict(checkpoint["state_dict"])
     trainer.batch_size=1
 
-    data=np.fromfile(args.datapath,dtype=np.float32).reshape((-1,1,args.input_size[0],args.input_size[1]))[args.start_idx:args.end_idx]
+    data=np.fromfile(datapath,dtype=np.float32).reshape((-1,1,args.input_size[0],args.input_size[1]))[args.start_idx:args.end_idx]
 
     data=(data-dmin)/(dmax-dmin)
-    if args.norm_tanh:
+    if norm_tanh:
         data=data*2-1
 
     val_dataloader = trainer.get_trainloader(data, shuffle=False)
