@@ -141,7 +141,7 @@ class Trainer(nn.Module):
                 print(target.shape)
 
                 for i in range (output.shape[0]):
-                    pr+=psnr(target[i],output[i])
+                    pr+=psnr(target[i]*4070,output[i]*4070)
                     count+=1
 
 
