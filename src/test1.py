@@ -19,7 +19,7 @@ if __name__ == "__main__":
    
     parser.add_argument('--datapath','-p',type=str,default="/home/jinyang.liu/lossycompression/NSTX-GPI/nstx_gpi_float_tenth.dat")
     parser.add_argument('--hidden_size','-hs',type=int,default=64)
-    parser.add_argument('--batchsize','-b',type=int,default=32)
+    parser.add_argument('--batch_size','-b',type=int,default=32)
     parser.add_argument('--window','-w',type=int,default=4)
     parser.add_argument('--epoch','-e',type=int,default=1)
     parser.add_argument('--horizon','-ho',type=int,default=1)
