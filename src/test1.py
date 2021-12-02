@@ -29,7 +29,7 @@ if __name__ == "__main__":
     parser.add_argument('--t_stride','-ts',type=int,default=1)
     parser.add_argument('--t_frames','-tf',type=int,default=2)
     parser.add_argument('--i_channel','-ic',type=int,default=1)
-    arser.add_argument('--lr_gamma','-lg',type=float,default=1)
+    parser.add_argument('--lr_gamma','-lg',type=float,default=1)
     parser.add_argument('--input_size','-is',type=int,nargs="+",default=[80,64])
     parser.add_argument('--layernum','-n',type=int,default=4)
     parser.add_argument('--norm_tanh','-t',type=bool,default=False)
