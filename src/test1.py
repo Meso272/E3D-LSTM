@@ -83,7 +83,7 @@ if __name__ == "__main__":
             target = target.to(trainer.device)
             output = trainer(input_seq)
              
-            if args.norm_tanh:
+            if norm_tanh:
                 target=(target+1)/2
                 output=(output+1)/2
             target=target*(dmax-dmin)+dmin
