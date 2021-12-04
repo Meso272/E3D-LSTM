@@ -152,15 +152,17 @@ class Trainer(nn.Module):
     
     def resume_train(self, args):
         # 2 weeks / 30min time step = 672
-        self.data=np.fromfile(args.data_path,dtype=np.float32).reshape((-1,args.input_size[0],args.input_size[1]))[args.start_idx:args.end_idx]
-        
+        if args.dataset=="nstxgpi":
+            self.data=np.fromfile(args.data_path,dtype=np.float32).reshape((-1,args.input_size[0],args.input_size[1]))[args.start_idx:args.end_idx]
+        elif args.dataset=="heat":
+
         if args.data_max!=None:
             self.data=(self.data-args.data_min)/(args.data_max-args.data_min)
         if args.norm_to_tanh:
             self.data=self.data*2-1
         self.data=np.expand_dims(self.data,1)
-        train_dataloader = self.get_trainloader(self.data[:-10000])#todo
-        val_dataloader = self.get_trainloader(self.data[-10000:], False)#todo
+        train_dataloader = self.get_trainloader(self.data[:-args.val_size])#todo
+        val_dataloader = self.get_trainloader(self.data[-args.val_size:], False)#todo
 
         if args.resume:
             ckpt_path=args.save
@@ -218,13 +220,15 @@ if __name__ == "__main__":
     
     parser.add_argument('--lr','-l',type=float,default=1e-3)
     parser.add_argument('--data_path','-p',type=str,default="/home/jinyang.liu/lossycompression/NSTX-GPI/nstx_gpi_float_tenth.dat")
+    parser.add_argument('--dataset','-d',type=str,default="nstxgpi")
     parser.add_argument('--hidden_size','-hs',type=int,default=64)
     parser.add_argument('--batch_size','-b',type=int,default=32)
     parser.add_argument('--window','-w',type=int,default=4)
     parser.add_argument('--tau','-tau',type=float,default=2)
     parser.add_argument('--horizon','-ho',type=int,default=1)
     parser.add_argument('--start_idx','-si',type=int,default=0)
-    parser.add_argument('--end_idx','-ei',type=int,default=30000)    
+    parser.add_argument('--end_idx','-ei',type=int,default=30000)
+    parser.add_argument('--val_size','-v',type=int,default=2000)    
     parser.add_argument('--t_stride','-ts',type=int,default=1)
     parser.add_argument('--t_frames','-tf',type=int,default=2)
     parser.add_argument('--epoch','-e',type=int,default=100)
@@ -246,11 +250,15 @@ if __name__ == "__main__":
     dmin=0
     
     if args.resume:
+        dataset=args.dataset
+        val_size=args.val_size
         save_interval=args.save_interval
         use_cpu=args.cpu
         ckpt=torch.load(args.save)
         ckpt_file=args.save
         args=ckpt["args"]
+        args.dataset=dataset
+        args.val_size=val_size
         args.save=ckpt_file
         args.save_interval=save_interval
         args.cpu=use_cpu
