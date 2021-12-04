@@ -137,8 +137,8 @@ class Trainer(nn.Module):
                 target = target.to(self.device)
                 #print(input.shape)
                 l1_loss, l2_loss,output = self.loss(input, target)
-                print(output.shape)
-                print(target.shape)
+                #print(output.shape)
+                #print(target.shape)
 
                 for i in range (output.shape[0]):
                     pr+=psnr(target[i],output[i])
