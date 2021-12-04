@@ -161,8 +161,8 @@ class Trainer(nn.Module):
             self.data=np.fromfile(args.data_path,dtype=np.float32).reshape((-1,args.input_size[0],args.input_size[1]))[args.start_idx:args.end_idx]
         
         elif args.dataset=="heat":
-            self.data=np.zeros((end_idx-start_idx,args.input_size[0],args.input_size[1]))
-            for i in range(start_idx,end_idx):
+            self.data=np.zeros((args.end_idx-args.start_idx,args.input_size[0],args.input_size[1]))
+            for i in range(args.start_idx,args.end_idx):
                 filename="%d.dat" % i
                 filepath=os.path.join(args.data_path,filename)
                 self.data[i-start_idx]=np.fromfile(filepath,dtype=np.float32)
