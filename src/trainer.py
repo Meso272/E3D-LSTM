@@ -13,7 +13,7 @@ import math
 from math import log10
 def psnr(true,pred):
     mse=F.mse_loss(true,pred)
-    r=20*log10(torch.max(true)-torch.min(pred)-10*log10(mse))
+    r=20*log10(torch.max(true)-torch.min(true))-10*log10(mse)
     #print(r)
     return r
 class Trainer(nn.Module):
@@ -141,7 +141,7 @@ class Trainer(nn.Module):
                 #print(target.shape)
 
                 for i in range (output.shape[0]):
-                    pr+=psnr(target[i],output[i])
+                    pr+=psnr(target[i]*4070,output[i]*4070)
                     count+=1
 
 
