@@ -165,7 +165,7 @@ class Trainer(nn.Module):
             for i in range(args.start_idx,args.end_idx):
                 filename="%d.dat" % i
                 filepath=os.path.join(args.data_path,filename)
-                self.data[i-start_idx]=np.fromfile(filepath,dtype=np.float32)
+                self.data[i-args.start_idx]=np.fromfile(filepath,dtype=np.float32)
 
         if args.data_max!=None:
             self.data=(self.data-args.data_min)/(args.data_max-args.data_min)
