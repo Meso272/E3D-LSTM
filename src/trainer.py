@@ -115,7 +115,7 @@ class Trainer(nn.Module):
             pin_memory=True,
         )
 
-    def validate(self, val_dataloader):
+    def validate(self, val_dataloader,args):
         self.eval()
 
         sum_l1_loss = 0
@@ -137,11 +137,16 @@ class Trainer(nn.Module):
                 target = target.to(self.device)
                 #print(input.shape)
                 l1_loss, l2_loss,output = self.loss(input, target)
+                if args.norm_to_tanh:
+                    input=(input+1)/2
+                    target=(target+1)/2
+                input=input*(args.data_max-args.data_min)+args.data_min
+                target=target*(args.data_max-args.data_min)+args.data_min
                 #print(output.shape)
                 #print(target.shape)
 
                 for i in range (output.shape[0]):
-                    pr+=psnr(target[i]*4070,output[i]*4070)
+                    pr+=psnr(target[i],output[i])
                     count+=1
 
 
@@ -154,7 +159,13 @@ class Trainer(nn.Module):
         # 2 weeks / 30min time step = 672
         if args.dataset=="nstxgpi":
             self.data=np.fromfile(args.data_path,dtype=np.float32).reshape((-1,args.input_size[0],args.input_size[1]))[args.start_idx:args.end_idx]
+        
         elif args.dataset=="heat":
+            self.data=np.zeros((end_idx-start_idx,args.input_size[0],args.input_size[1]))
+            for i in range(start_idx,end_idx):
+                filename="%d.dat" % i
+                filepath=os.path.join(args.data_path,filename)
+                self.data[i-start_idx]=np.fromfile(filepath,dtype=np.float32)
 
         if args.data_max!=None:
             self.data=(self.data-args.data_min)/(args.data_max-args.data_min)
@@ -212,7 +223,7 @@ class Trainer(nn.Module):
             if epoch % args.save_interval==0 or epoch==self.num_epoch:
                 torch.save({"epoch": epoch, "state_dict": self.state_dict(),"optimizer":self.optimizer.state_dict(),"scheduler":self.scheduler.state_dict(),
                     "args":args}, os.path.join(ckpt_path,"%d.pt" % epoch))
-            self.validate(val_dataloader)
+            self.validate(val_dataloader,args)
 
 
 if __name__ == "__main__":
