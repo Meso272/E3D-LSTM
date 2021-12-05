@@ -49,14 +49,14 @@ class Trainer(nn.Module):
         self.encoder = E3DLSTM(
             input_shape, args.hidden_size, lstm_layers, kernel, self.tau,fast=args.fast
         ).type(dtype)
-        self.decoder = nn.Conv3d(
-            args.hidden_size * self.time_steps, output_shape[0], kernel, padding=(0, 2, 2)
-        ).type(dtype)
+        #self.decoder = nn.Conv3d(
+        #    args.hidden_size * self.time_steps, output_shape[0], kernel, padding=(0, 2, 2)
+        #).type(dtype)
         #what about adding an actv?
-        # self.decoder = nn.Sequential(
-        #   nn.Conv3d(hidden_size * self.time_steps, output_shape[0]),
-        #  nn.ConvTranspose3d(output_shape[0], output_shape[0], kernel)
-        # ).type(dtype)
+        self.decoder = nn.Sequential(
+           nn.Conv3d(hidden_size * self.time_steps, output_shape[0]),
+          nn.ConvTranspose3d(output_shape[0], output_shape[0], kernel)
+         ).type(dtype)
 
         self.to(self.device)
 
@@ -255,7 +255,7 @@ if __name__ == "__main__":
     parser.add_argument('--save','-s',type=str,default="ckpts_nstxgpi_tenthdefault")
     parser.add_argument('--save_interval','-sv',type=int,default=5)
     parser.add_argument('--cpu','-c',type=bool,default=False)
-    parser.add_argument('--fast','-f',type=bool,default=False)
+    parser.add_argument('--fast','-f',type=bool,default=True)
 
 
     args = parser.parse_args()
