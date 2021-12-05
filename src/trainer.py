@@ -49,15 +49,16 @@ class Trainer(nn.Module):
         self.encoder = E3DLSTM(
             input_shape, args.hidden_size, lstm_layers, kernel, self.tau,fast=args.fast
         ).type(dtype)
-        #self.decoder = nn.Conv3d(
-        #    args.hidden_size * self.time_steps, output_shape[0], kernel, padding=(0, 2, 2)
-        #).type(dtype)
+        self.decoder = nn.Conv3d(
+            args.hidden_size * self.time_steps, output_shape[0], kernel, padding=(0, 2, 2)
+        ).type(dtype)
         #what about adding an actv?
+        '''
         self.decoder = nn.Sequential(
            nn.Conv3d(args.hidden_size * self.time_steps, output_shape[0],kernel),
           nn.ConvTranspose3d(output_shape[0], output_shape[0], kernel)
          ).type(dtype)
-
+         '''
         self.to(self.device)
 
         # Setup optimizer
@@ -75,8 +76,7 @@ class Trainer(nn.Module):
 
     def loss(self, input_seq, target):
         output = self(input_seq)
-        print(output.shape)
-        print(target.shape)
+        
         l2_loss = F.mse_loss(output , target )
         l1_loss = F.l1_loss(output, target )
 
