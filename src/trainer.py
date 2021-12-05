@@ -54,7 +54,7 @@ class Trainer(nn.Module):
         #).type(dtype)
         #what about adding an actv?
         self.decoder = nn.Sequential(
-           nn.Conv3d(args.hidden_size * self.time_steps, output_shape[0]),
+           nn.Conv3d(args.hidden_size * self.time_steps, output_shape[0],kernel),
           nn.ConvTranspose3d(output_shape[0], output_shape[0], kernel)
          ).type(dtype)
 
