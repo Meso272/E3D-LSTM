@@ -47,7 +47,7 @@ class Trainer(nn.Module):
         lstm_layers = args.layernum
 
         self.encoder = E3DLSTM(
-            input_shape, args.hidden_size, lstm_layers, kernel, self.tau
+            input_shape, args.hidden_size, lstm_layers, kernel, self.tau,fast=args.fast
         ).type(dtype)
         self.decoder = nn.Conv3d(
             args.hidden_size * self.time_steps, output_shape[0], kernel, padding=(0, 2, 2)
@@ -255,6 +255,8 @@ if __name__ == "__main__":
     parser.add_argument('--save','-s',type=str,default="ckpts_nstxgpi_tenthdefault")
     parser.add_argument('--save_interval','-sv',type=int,default=5)
     parser.add_argument('--cpu','-c',type=bool,default=False)
+    parser.add_argument('--fast','-f',type=bool,default=True)
+
 
     args = parser.parse_args()
     dmax=4070

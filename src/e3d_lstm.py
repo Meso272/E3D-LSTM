@@ -8,7 +8,7 @@ import torch.nn.functional as F
 
 
 class E3DLSTM(nn.Module):
-    def __init__(self, input_shape, hidden_size, num_layers, kernel_size, tau):
+    def __init__(self, input_shape, hidden_size, num_layers, kernel_size, tau,fast=True):
         super().__init__()
 
         self._tau = tau
@@ -16,7 +16,7 @@ class E3DLSTM(nn.Module):
 
         input_shape = list(input_shape)
         for i in range(num_layers):
-            cell = E3DLSTMCell(input_shape, hidden_size, kernel_size)
+            cell = E3DLSTMCell(input_shape, hidden_size, kernel_size,fast=fast)
             # NOTE hidden state becomes input to the next cell
             input_shape[0] = hidden_size
             self._cells.append(cell)
@@ -55,13 +55,13 @@ class E3DLSTM(nn.Module):
 
 
 class E3DLSTMCell(nn.Module):
-    def __init__(self, input_shape, hidden_size, kernel_size):
+    def __init__(self, input_shape, hidden_size, kernel_size,fast=True):
         super().__init__()
 
         in_channels = input_shape[0]
         self._input_shape = input_shape
         self._hidden_size = hidden_size
-
+        self.fast=fast
         # memory gates: input, cell(input modulation), forget
         self.weight_xi = ConvDeconv3d(in_channels, hidden_size, kernel_size)
         self.weight_hi = ConvDeconv3d(hidden_size, hidden_size, kernel_size, bias=False)
@@ -128,8 +128,10 @@ class E3DLSTMCell(nn.Module):
         r = torch.sigmoid(LR(self.weight_xr(x) + self.weight_hr(h)))
         i = torch.sigmoid(LR(self.weight_xi(x) + self.weight_hi(h)))
         g = torch.tanh(LR(self.weight_xg(x) + self.weight_hg(h)))
-
-        recall = self.self_attention_fast(r, c_history)
+        if self.fast:
+            recall = self.self_attention_fast(r, c_history)
+        else:
+            recall = self.self_attention(r, c_history)
         # nice_print(**locals())
         # mem_report()
         # cpu_stats()
