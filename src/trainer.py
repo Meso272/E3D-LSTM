@@ -75,7 +75,8 @@ class Trainer(nn.Module):
 
     def loss(self, input_seq, target):
         output = self(input_seq)
-
+        print(output.shape)
+        print(target.shape)
         l2_loss = F.mse_loss(output , target )
         l1_loss = F.l1_loss(output, target )
 
