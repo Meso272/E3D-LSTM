@@ -143,6 +143,7 @@ class E3DLSTMCell(nn.Module):
         f_prime = torch.sigmoid(LR(self.weight_xf_prime(x) + self.weight_mf_prime(m)))
 
         m = i_prime * g_prime + f_prime * m
+        '''
         o = torch.sigmoid(
             LR(
                 self.weight_xo(x)
@@ -151,7 +152,14 @@ class E3DLSTMCell(nn.Module):
                 + self.weight_mo(m)
             )
         )
-        h = o * torch.tanh(self.weight_111(torch.cat([c, m], dim=1)))
+        '''
+        o = torch.tanh(
+                self.weight_xo(x)
+                + self.weight_ho(h)
+                + self.weight_co(c)
+                + self.weight_mo(m)
+        )
+        h = torch.sigmoid(o) * torch.tanh(self.weight_111(torch.cat([c, m], dim=1)))
 
         # TODO is it correct FIFO?
         c_history = torch.cat([c_history[1:], c[None, :]], dim=0)
