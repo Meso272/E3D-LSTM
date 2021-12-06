@@ -13,7 +13,9 @@ import math
 from math import log10
 def psnr(true,pred):
     mse=F.mse_loss(true,pred)
+    print(mse)
     r=20*log10(torch.max(true)-torch.min(true))-10*log10(mse)
+    print(r)
     #print(r)
     return r
 class Trainer(nn.Module):
